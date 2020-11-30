@@ -1,0 +1,9 @@
+1. SELECT gole.matchid, gole.player FROM gole WHERE teamid='POL';
+2. SELECT gtime FROM mecze JOIN gole ON id=matchid WHERE gole.player='Ja
+kub Blaszczykowski' and gole.matchid=1004;
+3. SELECT player, stadium, mdate, teamname FROM mecze a JOIN gole b ON
+ a.id=b.matchid JOIN druzyny c ON c.id=b.teamid WHERE teamid='POL';
+4. SELECT team1, team2, player, gtime FROM mecze  JOIN gole ON id=matchid WHERE
+ player LIKE 'Mario%';
+5. SELECT player, teamid, coach, gtime FROM gole JOIN druzyny ON teamid=
+id WHERE gtime<=10;
