@@ -1,0 +1,254 @@
+6.
+INSERT INTO sklep.produkty VALUES
+(1,'Laptop Lenovo Z710', 3400.0, 1),
+(2,'Konsola Sony Playstation 4', 1199.99, 2),
+(3,'Kontroler Sony DualShock 4 v2', 199.90, 2),
+(4,'Mysz A4Tech Bloody R80 ', 129.0 , 3),
+(5,'Monitor Samsung Curved 27', 809.0, 4),
+(6,'Gra God of War PS4', 218.0, 2),
+(7,'Buty Adidas X_PLR CQ2406', 249.0, 6),
+(8,'Plecak Adidas Backpack Daily DM6156', 75.0, 6),
+(9,'S³uchawki bezprzewodowe JBL T110BT', 146.90, 7),
+(10,'Okulary Hawkers Gold Green Bottled Moma', 178.89, 9);
+INSERT INTO sklep.producenci VALUES
+(1, 'Lenovo', 'lenovo@gmail.com', '111111111'),
+(2, 'Sony', 'sony@gmail.com', '222222222'),
+(3, 'Bloody', 'bloody@gmail.com', '333333333'),
+(4, 'Samsung', 'samsung@gmail.com', '444444444'),
+(5, 'LG', 'lg@gmail.com', '555555555'),
+(6, 'Adidas', 'adidas@gmail.com', '666666666'),
+(7, 'JBL', 'jbl@gmail.com', '777777777'),
+(8, 'Nike', 'nike@gmail.com', '888888888'),
+(9, 'Hawkers', 'hawkers@gmail.com', '999999999'),
+(10, 'Razer', 'razer@gmail.com', '000000000');
+INSERT INTO sklep.zamowienia VALUES
+(1, 8, 1, '2018-09-14', 'ul. D³uga 8, 32-600 Oœwiêcim'), 
+(2, 6, 1, '2018-09-02', 'ul. ¯u³awskiego Wawrzyñca 129, 02-641 Warszawa'),
+(3, 5, 2, '2018-09-24', 'ul. Zwardoñ 144, 34-373 Zwardoñ'),
+(4, 4, 3, '2018-09-19', 'ul. Budryka Witolda 94, 40-749 Katowice'),
+(5, 10, 1, '2018-09-17', 'ul. Abrahama Romana 118, 85-318 Bydgoszcz'),
+(6, 1, 1, '2018-09-14', 'ul. O³owiana 68, 85-443 Bydgoszcz'),
+(7, 8, 1, '2018-10-03', 'ul. Koñcowa 55, 43-602 Jaworzno'),
+(8, 2, 1, '2018-10-12', 'ul. Pomorska 123, 90-218 £ódŸ'),
+(9, 5, 1, '2018-10-07', 'ul. Baziowa 25, 43-190 Miko³ów'),
+(10, 9, 3, '2018-10-24', 'ul. Po³udniowa 17, 40-777 Katowice'),
+(11, 1, 1, '2018-10-21', 'ul. Nad Pokrzywk¹ 5, 61-312 Poznañ'),
+(12, 7, 2, '2018-10-22', 'ul. Mleczna 146, 03-667 Warszawa'),
+(13, 3, 4, '2018-10-17', 'ul. Kawêczyñska 2, 03-775 Warszawa'),
+(14, 8, 24, '2018-10-17', 'ul. Licealna 27, 65-417 Zielona Góra'),
+(15, 2, 2, '2018-10-19', 'ul. Targowa 20, 03-729 Warszawa'),
+(16, 6, 8, '2018-10-18', 'ul. Folwarczna 18, 44-102 Gliwice'),
+(17, 9, 1, '2018-10-12', 'ul. PrzyjaŸni 8, 20-372 Lublin'),
+(18, 4, 2, '2018-10-15', 'ul. Parkowa 92, 71-634 Szczecin'),
+(19, 5, 1, '2018-10-26', 'ul. Pionierska 116, 45-591 Opole'),
+(20, 7, 1, '2018-10-13', 'ul. Ksiê¿ycowa 26, 81-577 Gdynia');
+
+11.
+a)
+SELECT 'Producent: ' || c.nazwa_producenta || ', liczba_zamowien: ' || SUM(a.ilosc)
+|| ', wartosc_zamowien: ' || SUM(a.ilosc*b.cena)
+FROM sklep.zamowienia a
+JOIN sklep.produkty b ON a.id_produktu = b.id_produktu
+JOIN sklep.producenci c ON b.id_producenta = c.id_producenta
+GROUP BY c.id_producenta;
+b)
+SELECT 'Produkt: ' || b.nazwa_produktu || ', liczba_zamowien: ' || SUM(a.ilosc)
+FROM sklep.zamowienia a
+JOIN sklep.produkty b ON a.id_produktu = b.id_produktu
+JOIN sklep.producenci c ON b.id_producenta = c.id_producenta
+GROUP BY b.id_produktu;
+c)
+SELECT * FROM sklep.produkty NATURAL JOIN sklep.zamowienia;
+d)
+
+e)
+SELECT * FROM sklep.zamowienia
+WHERE (SELECT date_part('month', data)) = 1;
+f) 
+//The day of the week as Sunday (0) to Saturday (6)
+SELECT date_part('dow', data) AS dzien_tygodnia , SUM(ilosc) AS suma
+	FROM sklep.zamowienia
+	GROUP BY date_part('dow', data);
+g)
+SELECT nazwa_produktu,SUM(ilosc) FROM sklep.zamowienia
+NATURAL JOIN sklep.produkty
+GROUP BY nazwa_produktu;
+
+12.
+a)
+SELECT 'Produkt ' || UPPER(b.nazwa_produktu) || 
+', którego producentem jest ' || LOWER(c.nazwa_producenta) ||
+', zamówiono ' || a.ilosc ||
+' razy' 
+AS opis
+FROM sklep.zamowienia a
+JOIN sklep.produkty b ON a.id_produktu = b.id_produktu
+JOIN sklep.producenci c ON b.id_producenta = c.id_producenta;
+b)
+SELECT a.*, a.ilosc*b.cena AS suma_zamowien
+FROM sklep.zamowienia a
+JOIN sklep.produkty b ON a.id_produktu = b.id_produktu
+ORDER BY a.ilosc*b.cena DESC LIMIT 
+(SELECT COUNT(*)
+FROM sklep.zamowienia a
+JOIN sklep.produkty b ON a.id_produktu = b.id_produktu) - 3;
+c)
+CREATE TABLE sklep.klienci (id_klienta INT NOT NULL, mail VARCHAR(50), telefon VARCHAR(50));
+d)
+ALTER TABLE sklep.klienci ADD PRIMARY KEY(id_klienta);
+DELETE FROM sklep.zamowienia WHERE id_zamowienia > 0;
+ALTER TABLE sklep.zamowienia ADD id_klienta INT NOT NULL;
+ALTER TABLE sklep.zamowienia ADD FOREIGN KEY (id_klienta) REFERENCES sklep.klienci(id_klienta);
+INSERT INTO sklep.klienci VALUES
+(1, 'aaa@gmail.com', '111111111'),
+(2, 'bbb@gmail.com', '222222222'),
+(3, 'ccc@gmail.com', '333333333'),
+(4, 'ddd@gmail.com', '444444444'),
+(5, 'eee@gmail.com', '555555555'),
+(6, 'fff@gmail.com', '666666666'),
+(7, 'ggg@gmail.com', '777777777'),
+(8, 'hhh@gmail.com', '888888888'),
+(9, 'iii@gmail.com', '999999999'),
+(10, 'jjj@gmail.com', '000000000');
+INSERT INTO sklep.zamowienia VALUES
+(1, 8, 1, '2018-09-14', 'ul. Krzywa 8, 32-600 Oœwiêcim', 1), 
+(2, 6, 1, '2018-09-02', 'ul. ¯u³awskiego Wawrzyñca 129, 02-641 Warszawa', 2),
+(3, 5, 2, '2018-09-24', 'ul. Zwardoñ 144, 34-373 Zwardoñ', 3),
+(4, 4, 3, '2018-09-19', 'ul. Budryka Witolda 94, 40-749 Katowice', 4),
+(5, 10, 1, '2018-09-17', 'ul. Abrahama Romana 118, 85-318 Bydgoszcz', 5),
+(6, 1, 1, '2018-09-14', 'ul. O³owiana 68, 85-443 Bydgoszcz', 6),
+(7, 8, 1, '2018-10-03', 'ul. Koñcowa 55, 43-602 Jaworzno', 7),
+(8, 2, 1, '2018-10-12', 'ul. Pomorska 123, 90-218 £ódŸ', 8),
+(9, 5, 1, '2018-10-07', 'ul. Baziowa 25, 43-190 Miko³ów', 8),
+(10, 9, 3, '2018-10-24', 'ul. Po³udniowa 17, 40-777 Katowice', 9),
+(11, 1, 1, '2018-10-21', 'ul. Nad Pokrzywk¹ 5, 61-312 Poznañ', 10),
+(12, 7, 2, '2018-10-22', 'ul. Mleczna 146, 03-667 Warszawa', 5),
+(13, 3, 4, '2018-10-17', 'ul. Kawêczyñska 2, 03-775 Warszawa', 3),
+(14, 8, 24, '2018-10-17', 'ul. Licealna 27, 65-417 Zielona Góra', 2),
+(15, 2, 2, '2018-10-19', 'ul. Targowa 20, 03-729 Warszawa', 1),
+(16, 6, 8, '2018-10-18', 'ul. Folwarczna 18, 44-102 Gliwice', 5),
+(17, 9, 1, '2018-10-12', 'ul. PrzyjaŸni 8, 20-372 Lublin', 6),
+(18, 4, 2, '2018-10-15', 'ul. Parkowa 92, 71-634 Szczecin', 8),
+(19, 5, 1, '2018-10-26', 'ul. Pionierska 116, 45-591 Opole', 9),
+(20, 7, 1, '2018-10-13', 'ul. Ksiê¿ycowa 26, 81-577 Gdynia', 9);
+e)
+SELECT d.*, b.nazwa_produktu, a.ilosc, a.ilosc*b.cena AS wartosc_zamowienia
+FROM sklep.zamowienia a
+JOIN sklep.produkty b ON a.id_produktu = b.id_produktu
+JOIN sklep.producenci c ON b.id_producenta = c.id_producenta
+JOIN sklep.klienci d ON a.id_klienta = d.id_klienta;
+f)
+SELECT 'najczesciej zamawiali: id_klienta: ' || sklep.klienci.id_klienta || ', e-mail: ' ||
+sklep.klienci.mail || ', nr telefonu: ' || sklep.klienci.telefon || ' '  || 'ilosc zamowien ' ||
+COUNT(sklep.zamowienia.id_klienta)  || ', kwota: ' ||  SUM(sklep.zamowienia.ilosc*sklep.produkty.cena) || 'z?' FROM sklep.klienci JOIN sklep.zamowienia 
+ON sklep.klienci.id_klienta= sklep.zamowienia.id_klienta JOIN sklep.produkty ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu
+GROUP BY sklep.klienci.id_klienta 
+ORDER by COUNT(sklep.zamowienia.id_klienta) DESC LIMIT 1;
+
+SELECT 'najrzadziej zamawiali: id_klienta: ' || sklep.klienci.id_klienta || ', e-mail: ' ||
+sklep.klienci.mail || ', nr telefonu: ' || sklep.klienci.telefon || ' '  || 'ilosc zamowien ' ||
+COUNT(sklep.zamowienia.id_klienta)  || ', kwota: ' ||  SUM(sklep.zamowienia.ilosc*sklep.produkty.cena) || 'z?' FROM sklep.klienci JOIN sklep.zamowienia 
+ON sklep.klienci.id_klienta= sklep.zamowienia.id_klienta JOIN sklep.produkty ON sklep.zamowienia.id_produktu = sklep.produkty.id_produktu
+GROUP BY sklep.klienci.id_klienta 
+ORDER by COUNT(sklep.zamowienia.id_klienta) LIMIT 1;
+g)
+INSERT INTO sklep.produkty VALUES (11, 'czapka', 10.33, 3);
+INSERT INTO sklep.produkty VALUES (12, 'naszyjnik', 2.3, 5);
+
+DELETE FROM sklep.produkty a
+WHERE a.id_produktu NOT IN (SELECT b.id_produktu FROM sklep.zamowienia b);
+
+DELETE FROM sklep.produkty 
+WHERE id_produktu IN 
+(SELECT b.id_produktu AS tutaj FROM sklep.zamowienia a
+RIGHT OUTER JOIN sklep.produkty b ON a.id_produktu = b.id_produktu
+WHERE a.id_zamowienia IS NULL);
+
+
+13.
+a) 
+CREATE TABLE sklep.numer (liczba DECIMAL(4,0) NOT NULL);
+b)
+CREATE SEQUENCE liczba_seq INCREMENT BY 5 MINVALUE 0 MAXVALUE 125 START 100 CYCLE;
+c)
+INSERT INTO sklep.numer VALUES
+( (SELECT nextval('liczba_seq')) ),
+( (SELECT nextval('liczba_seq')) ),
+( (SELECT nextval('liczba_seq')) ),
+( (SELECT nextval('liczba_seq')) ),
+( (SELECT nextval('liczba_seq')) ),
+( (SELECT nextval('liczba_seq')) ),
+( (SELECT nextval('liczba_seq')) );
+SELECT * FROM sklep.numer;
+d)
+ALTER SEQUENCE liczba_seq INCREMENT BY 6;
+e)
+SELECT currval('liczba_seq');
+SELECT nextval('liczba_seq');
+f)
+DROP SEQUENCE liczba_seq;
+
+14.
+a)
+SELECT u.usename AS "User name",
+  CASE WHEN u.usesuper AND u.usecreatedb THEN CAST('superuser, create database' AS pg_catalog.text)
+       WHEN u.usesuper THEN CAST('superuser' AS pg_catalog.text)
+       WHEN u.usecreatedb THEN CAST('create database' AS pg_catalog.text)
+       ELSE CAST('' AS pg_catalog.text)
+  END AS "Attributes"
+FROM pg_catalog.pg_user u
+ORDER BY 1;
+b)
+CREATE ROLE quest279421;
+GRANT SELECT ON ALL TABLES IN SCHEMA sklep TO quest279421;
+CREATE ROLE Superuser279421 WITH SUPERUSER;
+
+c)
+REVOKE ALL PRIVILEGES ON DATABASE s279421 FROM Superuser279421;
+GRANT SELECT ON ALL TABLES IN SCHEMA sklep TO Superuser279421;
+ALTER ROLE Superuser279421 RENAME TO student;
+DROP ROLE quest279421;
+
+15.
+a)
+BEGIN;
+UPDATE sklep.produkty SET cena = cena+10;
+COMMIT;
+SELECT * FROM sklep.produkty;
+b)
+BEGIN;
+UPDATE sklep.produkty SET cena = 1.1*cena WHERE id_produktu = 3;
+SAVEPOINT S1;
+UPDATE sklep.zamowienia SET ilosc = 1.25*ilosc;
+SAVEPOINT S2;
+DELETE FROM sklep.zamowienia WHERE id_klienta = 
+(SELECT id_klienta FROM 
+(SELECT id_klienta, SUM(ilosc) AS suma FROM sklep.zamowienia
+GROUP BY id_klienta
+ORDER BY suma DESC
+LIMIT 1) AS foo);
+DELETE FROM sklep.klienci WHERE id_klienta = 
+(SELECT id_klienta FROM 
+(SELECT id_klienta, SUM(ilosc) AS suma FROM sklep.zamowienia
+GROUP BY id_klienta
+ORDER BY suma DESC
+LIMIT 1) AS foo);
+ROLLBACK TO S1;
+ROLLBACK TO S2;
+ROLLBACK;
+
+c)
+CREATE OR REPLACE FUNCTION percent()
+  RETURNS TABLE (wynik text) AS $func$
+BEGIN
+	RETURN QUERY
+	SELECT c.nazwa_producenta || ' - ' || 
+	100*SUM(ilosc)/(SELECT SUM(ilosc) FROM sklep.zamowienia) 
+	|| '% wszystkich zamowien'
+	FROM sklep.zamowienia a
+	JOIN sklep.produkty b ON a.id_produktu = b.id_produktu
+	JOIN sklep.producenci c ON b.id_producenta = c.id_producenta
+	GROUP BY c.nazwa_producenta;
+END
+$func$ LANGUAGE plpgsql;
+select percent();
