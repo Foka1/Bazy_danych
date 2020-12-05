@@ -1,0 +1,56 @@
+1.
+zmiana koloru:
+- we w³aœciwoœciach trees wchodzimy w styl, wartoœæ unikalna, wybieramy VEGDESC
+
+pole powierzchni:
+wtyczka Group Status, w polu rows przeciagamy wartosc VEGDESC, w polu values AREA_KM2
+lasy mieszane: 189273
+
+2.
+wchodzimy w wketro, podziel warstwe wektorowa, w poli ID wybieramy VEGDESC
+
+3.
+- zaznaczamy warstwe railroads, nastepnie region Matanuska-Susitna
+- iloczyn z narzêdzi geoprocesing
+- nowa warstwa iloczyn
+- w kalkulatorze pól dajemy adrybut length, nastepnie sum
+wynik:268506
+
+4.
+-Wtyczka Group Status, wybieramy warstwe aitports, rows -> USE, w Values ustawiamy ELEV i Average,filter ["USE"  LIKE 'Military']
+wynik: 593.25
+
+W iloœci lotnisk zamiast average dajemy count:
+wynik: 8
+
+do wyznaczenia lotnisk military  > 1400 m npm w polu filter wpisujemy "ELEV" >=1400
+wynik: 1
+
+5.
+wybieramy warstwe popp, warstwa regions - Bristol Bay, wybieramy iloczyn z geoprocesing, warstwa iloczyn
+w kalkulatorze pól count("cat") wychodzi 11
+- w narzêdziach procesingu wybieramy bufor -> odleg³oœæ 100km
+
+6.
+wektor, narzêdzia analizy, przeciêcie linii, majrivers i railroads
+8 przeciêæ
+
+7.
+wektor, z narzêdzia analizy wybieramy wydob¹dŸ wierzcho³ki, jest ich 662
+
+8.
+lotniska:
+geoprocesing, bufor -> odleglosc 100 km
+
+linie kolejowwe:
+narzedzia geoprocesingu, bufor -> odleglosc 50 km
+
+9.
+pole: 24719.8 km^2
+liczba wierzcho³ków: 7469
+
+po uproszczeniu:
+pole pow bez zmian
+liczba wierzcho³ków: 6175
+
+
